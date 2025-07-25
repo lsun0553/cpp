@@ -1,0 +1,44 @@
+/* Исключения и деструкторы.
+ Если в блоке try создаются некоторые объекты,
+ то при возникновении исключения у них вызываются деструкторы.
+*/
+#include <iostream>
+using std::cout, std::cerr, std::endl;
+
+class Person
+{
+public:
+  Person(std::string name) :name{ name }
+  {
+    cout << "Person " << name << " created (конструктор)" << endl;
+  }
+  ~Person()
+  {
+    cout << "Person " << name << " deleted (деструктор)" << endl;
+  }
+  static void print()
+    {
+      //cout << name << endl;
+      cout << "После этого оператора будет сгенерировано исключение (print)" << endl;
+      throw "Это рукотворное исключение из Person::print() (throw)";
+    }
+private:
+    std::string name;
+};
+
+int main()
+{
+  cout << "1) Создадим экземпляр класса:" << endl;
+  try {
+        Person tom{ "Tom" };
+        tom.print();    // Внутри print генерируется ошибка
+  } catch (const char* err) {
+        cerr << err << endl;
+  }
+  cout << "2) Сгенерируем исключение используя Person::print()" << endl;
+  try {
+        Person::print();// Внутри print генерируется ошибка
+  } catch (const char* err) {
+        cerr << err << endl;
+  } //
+}
